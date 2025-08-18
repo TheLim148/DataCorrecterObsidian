@@ -2,14 +2,15 @@ import os
 
 def print_files_information() -> list:
     # info = []
-    files: list = os.listdir("temp")
+    files: list = os.listdir("bak")
 
     for file in files:
         # info.append(file)
         print(f"\n{file}")
-        with open(f"temp/{file}", "r") as text:
+        with open(f"bak/{file}", "r+") as text:
             for line in text:
                 if line.find("Title") > 0:
+                    line = line.replace("\"", "")
                     # info.append(line.strip())
                     print(line.strip())
                     # print(line.split("\""))
