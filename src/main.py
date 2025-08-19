@@ -13,10 +13,11 @@ def edit_files() -> list:
         re.MULTILINE
     )
 
-    files: list = os.listdir("bak")
+    local_dir = input("Введите путь к файлам: ")
+    files: list = os.listdir(local_dir)
 
     for file in files:
-        with open(f"bak/{file}", "r", encoding="utf-8") as text:
+        with open(os.path.join(local_dir, file), "r", encoding="utf-8") as text:
             list_of_lines = text.readlines()
             text.seek(0)
             whole_text = text.read().strip()
@@ -47,9 +48,9 @@ def edit_files() -> list:
                     format_string = date + "T" + clean_time
                     elem += format_string
                 new.append(elem + "\n")
-            # print(new)
-    return new
-        
+
+            with open(os.path.join(local_dir, file), "w", encoding="utf-8") as f:
+                f.writelines(new)
 
 def main() -> None:
     edit_files()
