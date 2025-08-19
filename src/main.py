@@ -20,7 +20,10 @@ def foo() -> list:
     global date;       date = ""
     global clean_time; clean_time = ""
     
-    pattern = re.compile(r"^Creation date: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$")
+    pattern = re.compile(
+        r"^Creation date: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$",
+        re.MULTILINE
+    )
 
     files: list = os.listdir("bak")
 
@@ -31,40 +34,39 @@ def foo() -> list:
 
         with open(f"bak/{file}", "r", encoding="utf-8") as text:
             list_of_lines = text.readlines()
+            text.seek(0)
+            whole_text = text.read().strip()
         
         for line in list_of_lines:
             elem = line.strip()
             
             match = pattern.match(elem)
             if match:
-                print(elem)
+                pass
             else:
-                pass
+                if elem.startswith("\"Title"):
+                    elem = elem.replace("\"", "").replace(":", "", 1)
 
-            if not elem.startswith("\"Title"):
-                pass
+                    date = elem.split(":")[1].replace("\n", "").strip()
 
-            if elem.startswith("Creation date"):
-                pass
+                if elem.startswith("\"Modification date"):
+                    elem = elem.replace("\"", "").replace(":", "", 1)
 
-            if elem.startswith("\"Title"):
-                elem = elem.replace("\"", "").replace(":", "", 1)
+                    raw_time = elem.split("2025")[-1].strip().split(":")[0:2]
+                    clean_time = ":".join(raw_time) + ":00"
 
-                date = elem.split(":")[1].replace("\n", "").strip()
-
-            if elem.startswith("\"Modification date"):
-                elem = elem.replace("\"", "").replace(":", "", 1)
-
-                raw_time = elem.split("2025")[-1].strip().split(":")[0:2]
-                clean_time = ":".join(raw_time) + ":00"
-
-            if elem.startswith("\"Creation date"):
-                elem = elem.replace("\"", "").replace(":", "", 1)
+                if elem.startswith("\"Creation date"):
+                    elem = elem.replace("\"", "").replace(":", "", 1)
 
             
             # new.append(elem)
-        # format_string = date + "T" + clean_time
-        # print(format_string)
+        match1 = pattern.search(whole_text)
+        # print(match1)
+        if match1:
+            pass
+        else:
+            format_string = date + "T" + clean_time
+            print(format_string)
     return new
         
 
