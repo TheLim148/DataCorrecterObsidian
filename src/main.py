@@ -24,6 +24,8 @@ def edit_files() -> list:
 
         new: list = []
 
+        date = os.path.basename(file)
+
         match = pattern.search(whole_text)
         if match:
             print(f"\n{file}: соответствует формату")
@@ -32,9 +34,8 @@ def edit_files() -> list:
             swap(list_of_lines, 4, 5) #Now string "Creation date" above string "Modification date" in array
             for line in list_of_lines:
                 elem = line.rstrip("\n")
-
                 if elem.startswith("\"Title"): # index = 3
-                    date = elem.split(":")[2].replace("\n", "").strip()
+                    # date = elem.split(":")[2].replace("\n", "").strip()
                     continue
 
                 if elem.startswith("\"Modification date"): #index = 4
