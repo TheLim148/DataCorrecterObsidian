@@ -1,4 +1,5 @@
 import os
+import re
 
 def print_files_information() -> None:
     files: list = os.listdir("bak")
@@ -12,17 +13,18 @@ def print_files_information() -> None:
                     date = line.split(":")[1].replace("\n", "").strip()
                     print(date)
                     print(line.strip())
-                    # print(line.split("\""))
-                    # print(line.split(":"))
                 if line.find(" date") > 0:
                     print(line.strip())
 
 def foo() -> list:
+    global date;       date = ""
+    global clean_time; clean_time = ""
+    
+    pattern = re.compile(r"^Creation date: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$")
+
     files: list = os.listdir("bak")
 
     new: list = []
-    global date
-    global clean_time
 
     for file in files:
         print(f"\n{file}")
@@ -30,46 +32,44 @@ def foo() -> list:
         with open(f"bak/{file}", "r", encoding="utf-8") as text:
             list_of_lines = text.readlines()
         
-        for elem in list_of_lines:
-            strip_elem = elem.rstrip("\n")
-
-            if not strip_elem.startswith("\"Title"):
+        for line in list_of_lines:
+            elem = line.strip()
+            
+            match = pattern.match(elem)
+            if match:
+                print(elem)
+            else:
                 pass
 
-            if strip_elem.startswith("\"Title"):
-                strip_elem = strip_elem.replace("\"", "").replace(":", "", 1)
-
-                date = strip_elem.split(":")[1].replace("\n", "").strip()
-                # print(strip_elem)
-
-            if strip_elem.startswith("\"Modification date"):
-                strip_elem = strip_elem.replace("\"", "").replace(":", "", 1)
-
-                raw_time = strip_elem.split("2025")[-1].strip().split(":")[0:2]
-                clean_time = ":".join(raw_time)
-
-                # print(clean_time)
-                # print(strip_elem)
-
-            if strip_elem.startswith("Creation date"):
+            if not elem.startswith("\"Title"):
                 pass
-                # print(strip_elem)
 
-            if strip_elem.startswith("\"Creation date"):
-                strip_elem = strip_elem.replace("\"", "").replace(":", "", 1)
-                # print(strip_elem)
+            if elem.startswith("Creation date"):
+                pass
 
-            # new.append(strip_elem)
-    # return new
+            if elem.startswith("\"Title"):
+                elem = elem.replace("\"", "").replace(":", "", 1)
+
+                date = elem.split(":")[1].replace("\n", "").strip()
+
+            if elem.startswith("\"Modification date"):
+                elem = elem.replace("\"", "").replace(":", "", 1)
+
+                raw_time = elem.split("2025")[-1].strip().split(":")[0:2]
+                clean_time = ":".join(raw_time) + ":00"
+
+            if elem.startswith("\"Creation date"):
+                elem = elem.replace("\"", "").replace(":", "", 1)
+
+            
+            # new.append(elem)
+        # format_string = date + "T" + clean_time
+        # print(format_string)
+    return new
         
 
 def main() -> None:
-    # foo1: list = foo()
     foo()
-    # print(date)
-    
-    ideal_string = date + "T" + clean_time
-    print(ideal_string)
 
     # print(foo1)
     # print_files_information()
